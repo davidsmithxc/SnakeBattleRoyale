@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.7)
 
 add_definitions(-std=c++17)
 
-set(CXX_FLAGS "-Wall -j32")
+set(CXX_FLAGS "-Wall -j32 -pthread")
 set(CMAKE_CXX_FLAGS, "${CXX_FLAGS}")
 
 project(SnakeRoyale)
