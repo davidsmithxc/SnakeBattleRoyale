@@ -4,9 +4,8 @@
 
 Snake::Snake(int p_x, int p_y, int p_h, int p_w) : Entity::Entity(p_x, p_y, p_h, p_w)
 {
-    std::cout << "Snake constructor" << std::endl;
     m_dir = Direction::kRight;
-    extend(10);
+    // extend(10);
 }
 
 void Snake::render(SDL_Renderer* renderer)
