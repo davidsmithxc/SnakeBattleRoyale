@@ -2,10 +2,8 @@
 #include <vector>
 #include <iostream>
 
-Snake::Snake(int p_x, int p_y, int p_h, int p_w) : Entity::Entity(p_x, p_y, p_h, p_w)
+Snake::Snake(int p_x, int p_y, int p_h, int p_w) : Entity::Entity(p_x, p_y, p_h, p_w), m_dir(Direction::kRight), m_health(1), m_kSpeed(p_w), m_selfCollision(false)
 {
-    m_dir = Direction::kRight;
-    // extend(10);
 }
 
 void Snake::render(SDL_Renderer* renderer)
@@ -47,33 +45,36 @@ void Snake::changeDir(Direction p_dir)
 
 void Snake::update()
 {
-    constexpr int kSpeed = 5;
 
-    if (!m_tail.empty())
+    if (m_tail.size() > 0)
+    {
         m_tail.erase(m_tail.begin());
         m_tail.emplace_back(*(getShape()));
+    }
     
     switch (m_dir)
     {
     case Direction::kUp:
-        decY(-kSpeed);
+        decY(-m_kSpeed);
         break;
 
     case Direction::kDown:
-        decY(kSpeed);
+        decY(m_kSpeed);
         break;
 
     case Direction::kLeft:
-        decX(-kSpeed);
+        decX(-m_kSpeed);
         break;
 
     case Direction::kRight:
-        decX(kSpeed);
+        decX(m_kSpeed);
         break;
     
     default:
         break;
     }
+
+    if (m_tail.size() > 3) checkSelfCollision(); // snake cannot self collided for tail len < 3
 }
 
 void Snake::extend(int p_extension)
@@ -81,5 +82,17 @@ void Snake::extend(int p_extension)
     for (int i = 0; i < p_extension; i++)
     {
         m_tail.emplace_back(*(getShape()));   
+    }
+}
+
+void Snake::checkSelfCollision()
+{
+    for(SDL_Rect& tail_rect : m_tail)
+    {
+        if ((tail_rect.x == getX()) && (tail_rect.y == getY()))
+        {
+            m_selfCollision = true;
+            break;
+        }
     }
 }

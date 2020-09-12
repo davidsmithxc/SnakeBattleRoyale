@@ -9,8 +9,17 @@
 
 // TODO: create some form of came config file
 const char* kTitle = "Snake Royale";
-const int kWidth = 1280;
-const int kHeight = 720;
+const int kWidth = 500;
+const int kHeight = 500;
+const int kGridSize = 10;
+
+int snapToGridPos(int p_point)
+{
+    p_point /= kGridSize;
+    p_point *= kGridSize;
+
+    return p_point;
+}
 
 int main(int argc, char* args[])
 {
@@ -29,14 +38,15 @@ int main(int argc, char* args[])
     // set up game loop
     bool gameRunning = true;
     SDL_Event event;
-    Snake player_snake(0, 0, 5, 5);
-    Food food(100, 100, 5, 5);
+    Snake player_snake(snapToGridPos(0), snapToGridPos(0), kGridSize, kGridSize);
+    Food food(snapToGridPos(kWidth / 2), snapToGridPos(kHeight / 2), kGridSize, kGridSize);
 
     // start game loop
     while(gameRunning)
     {
         // Handle inputs
         // TODO: Encapsulate input handler
+
         while(SDL_PollEvent(&event))
         {
             if(event.type == SDL_QUIT)
@@ -70,13 +80,32 @@ int main(int argc, char* args[])
         // Update
         player_snake.update();
 
-        // some game logic
+        // check snake-wall collision
+        if ((player_snake.getX() < 0) || (player_snake.getY() < 0) || (player_snake.getX() > kWidth) || (player_snake.getY() > kHeight))
+        {
+            player_snake.setHealth(0);
+            gameRunning = false;
+            break;
+        }
+
+        // check snake self-collision state
+        if (player_snake.isSelfCollided())
+        {
+            player_snake.setHealth(0);
+            gameRunning = false;
+            break;
+        }
+        
+        // check food eaten
         if (player_snake == food)
         {
-            //TODO: Ensure that food is only placed on valid grid position
-            food.setPosition(rand() % kWidth, rand() % kHeight);
+            int new_x = ((rand() % kWidth) / kGridSize) * kGridSize;
+            int new_y = ((rand() % kHeight) / kGridSize) * kGridSize;
+            food.setPosition(new_x, new_y);
             player_snake.extend(1);
         }
+
+
 
         food.update();
                 
@@ -91,7 +120,7 @@ int main(int argc, char* args[])
         SDL_RenderPresent(renderer);
 
         // TODO: Create proper game loop
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::this_thread::sleep_for(std::chrono::milliseconds(60));
     }
 
     // exit and clean up

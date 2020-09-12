@@ -12,7 +12,15 @@ class Snake : public Entity
         void changeDir(Direction p_dir);
         void render(SDL_Renderer* renderer);
         void extend(int p_extension);
+
+        void setHealth(int p_health) { m_health = p_health; };
+        int  const getTailSize() { return m_tail.size(); };
+        bool const isSelfCollided() { return m_selfCollision; };
     private:
         std::vector<SDL_Rect> m_tail;
         Direction m_dir;
+        int m_health;
+        bool m_selfCollision;
+        const int m_kSpeed;
+        void checkSelfCollision();
 };
