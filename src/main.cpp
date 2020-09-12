@@ -4,6 +4,8 @@
 #include <thread>
 #include <chrono>
 #include <cstdlib>
+#include <memory>
+
 #include "Snake.hpp"
 #include "Food.hpp"
 #include "AutoSnake.hpp"
@@ -13,6 +15,7 @@ const char* kTitle = "Snake Royale";
 const int kWidth = 500;
 const int kHeight = 500;
 const int kGridSize = 10;
+const int kStartNumEnemies = 2;
 
 int snapToGridPos(int p_point)
 {
@@ -39,10 +42,30 @@ int main(int argc, char* args[])
     // set up game loop
     bool gameRunning = true;
     SDL_Event event;
+
     //TODO: Update snake to get some world information and autoinit
-    Snake player_snake(snapToGridPos(0), snapToGridPos(0), kGridSize, kGridSize);
-    Food food(snapToGridPos(kWidth / 2), snapToGridPos(kHeight / 2), kGridSize, kGridSize);
-    AutoSnake enemy(snapToGridPos(kWidth - kGridSize), snapToGridPos(kWidth - kGridSize), kGridSize, kGridSize, &food);
+    
+    // Initialize entities
+    std::vector<Entity*> entities;
+
+    // Make specific entities
+    std::shared_ptr<Snake> player_snake = std::make_shared<Snake>(snapToGridPos(0), snapToGridPos(0), kGridSize, kGridSize);
+    std::shared_ptr<Food> food = std::make_shared<Food>(snapToGridPos(kWidth / 2), snapToGridPos(kHeight / 2), kGridSize, kGridSize);
+    std::vector<std::shared_ptr<AutoSnake>> enemies;
+
+    for (int i = 0; i < kStartNumEnemies; i++)
+    {
+        enemies.emplace_back(std::make_shared<AutoSnake>(snapToGridPos(kWidth - kGridSize), snapToGridPos(kWidth - kGridSize), kGridSize, kGridSize, food.get()));
+    }
+
+    // Push back player first to ensure player calculted first, food, 
+    entities.push_back(player_snake.get());
+    entities.push_back(food.get());
+
+    for (std::shared_ptr<AutoSnake> auto_snake : enemies)
+    {
+        entities.push_back(auto_snake.get());
+    }
 
     // start game loop
     while(gameRunning)
@@ -60,16 +83,16 @@ int main(int argc, char* args[])
                 switch (event.key.keysym.sym)
                 {
                 case SDLK_w:
-                    player_snake.changeDir(Direction::kUp);
+                    player_snake->changeDir(Direction::kUp);
                     break;
                 case SDLK_a:
-                    player_snake.changeDir(Direction::kLeft);
+                    player_snake->changeDir(Direction::kLeft);
                     break;
                 case SDLK_s:
-                    player_snake.changeDir(Direction::kDown);
+                    player_snake->changeDir(Direction::kDown);
                     break;
                 case SDLK_d:
-                    player_snake.changeDir(Direction::kRight);
+                    player_snake->changeDir(Direction::kRight);
                     break;
                 default:
                     break;
@@ -81,52 +104,52 @@ int main(int argc, char* args[])
         // *** Game Logic ***
         // TODO: Move game logic
         // Update
-        player_snake.update();
-        enemy.update();
+        player_snake->update();
+        for (std::shared_ptr<AutoSnake> enemy : enemies) enemy->update();
 
         // check snake-wall collision
-        if ((player_snake.getX() < 0) || (player_snake.getY() < 0) || (player_snake.getX() > kWidth) || (player_snake.getY() > kHeight))
+        if ((player_snake->getX() < 0) || (player_snake->getY() < 0) || (player_snake->getX() > kWidth) || (player_snake->getY() > kHeight))
         {
-            player_snake.setHealth(0);
+            player_snake->setHealth(0);
             gameRunning = false;
             break;
         }
 
         // check snake self-collision state
-        if (player_snake.isSelfCollided())
+        if (player_snake->isSelfCollided())
         {
-            player_snake.setHealth(0);
+            player_snake->setHealth(0);
             gameRunning = false;
             break;
         }
         
         // check food eaten
-        if (player_snake == food)
+        if ((player_snake->getX() == food->getX()) && (player_snake->getY() == food->getY()))
         {
             int new_x = ((rand() % kWidth) / kGridSize) * kGridSize;
             int new_y = ((rand() % kHeight) / kGridSize) * kGridSize;
-            food.setPosition(new_x, new_y);
-            player_snake.extend(1);
+            food->setPosition(new_x, new_y);
+            player_snake->extend(1);
         }
 
-        if (enemy == food)
+        for (std::shared_ptr<AutoSnake> enemy : enemies)
         {
-            int new_x = ((rand() % kWidth) / kGridSize) * kGridSize;
-            int new_y = ((rand() % kHeight) / kGridSize) * kGridSize;
-            food.setPosition(new_x, new_y);
-            enemy.extend(1);
+            if ((enemy->getX() == food->getX()) && (enemy->getY() == food->getY()))
+            {
+                int new_x = ((rand() % kWidth) / kGridSize) * kGridSize;
+                int new_y = ((rand() % kHeight) / kGridSize) * kGridSize;
+                food->setPosition(new_x, new_y);
+                enemy->extend(1);
+            }
         }
 
-        food.update();
+        food->update();
                 
         // Do rendering
         SDL_SetRenderDrawColor(renderer, 0x1E, 0x1E, 0x1E, 0xFF);
         SDL_RenderClear(renderer);
 
-        player_snake.render(renderer);
-        enemy.render(renderer);
-        food.render(renderer);
-
+        for (Entity* e : entities) e->render(renderer);
                 
         SDL_RenderPresent(renderer);
 

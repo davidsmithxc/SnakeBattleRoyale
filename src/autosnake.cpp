@@ -55,6 +55,9 @@ void AutoSnake::update()
 
 void AutoSnake::routeToFood()
 {
+    // chance for snake to fail to take action
+    if (rand() % 101 < 20) return;
+    
     Direction x_dir = Direction::kNone;
     Direction y_dir = Direction::kNone;
     
@@ -87,6 +90,13 @@ void AutoSnake::routeToFood()
     } else if ((y_dir != Direction::kNone) && !((y_dir == Direction::kLeft) && (m_dir == Direction::kRight)) && !((x_dir == Direction::kRight) && (m_dir == kLeft)))
     {
         m_dir = y_dir;
+    }
+
+    // add some imperfection to the snake
+    // TODO: Parameterize quality -> Base on level of snake size()
+    if (rand() % 101 < 5)
+    {
+        m_dir = static_cast<Direction>(rand() % Direction::kNone);
     }
     
 }
