@@ -25,6 +25,9 @@ class Entity
         void decX(int p_x) { m_shape.x += p_x; }
         void decY(int p_y) { m_shape.y += p_y; }
         bool operator==(const Entity &rhs) const;
+
+    protected:
+        SDL_Color m_color;
     
     private:
         SDL_Rect m_shape;

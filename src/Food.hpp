@@ -10,6 +10,7 @@ class Food : public Entity
         void update();
         void render(SDL_Renderer* renderer);
         bool isEaten() { return m_eaten; };
+
     private:
         bool m_eaten;
 };

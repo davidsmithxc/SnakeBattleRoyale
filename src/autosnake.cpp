@@ -4,7 +4,12 @@
 #include <iostream>
 
 AutoSnake::AutoSnake(int p_x, int p_y, int p_h, int p_w, Food* p_food) : Snake::Snake(p_x, p_y, p_h, p_w), m_food(p_food)
-{}
+{
+    m_color.r = 0xFF;
+    m_color.g = 0x00;
+    m_color.b = 0x00;
+    m_color.a = 0x00;
+}
 
 void AutoSnake::update()
 {
