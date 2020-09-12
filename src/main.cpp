@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include "Snake.hpp"
 #include "Food.hpp"
+#include "AutoSnake.hpp"
 
 // TODO: create some form of came config file
 const char* kTitle = "Snake Royale";
@@ -38,8 +39,10 @@ int main(int argc, char* args[])
     // set up game loop
     bool gameRunning = true;
     SDL_Event event;
+    //TODO: Update snake to get some world information and autoinit
     Snake player_snake(snapToGridPos(0), snapToGridPos(0), kGridSize, kGridSize);
     Food food(snapToGridPos(kWidth / 2), snapToGridPos(kHeight / 2), kGridSize, kGridSize);
+    AutoSnake enemy(snapToGridPos(kWidth - kGridSize), snapToGridPos(kWidth - kGridSize), kGridSize, kGridSize, &food);
 
     // start game loop
     while(gameRunning)
@@ -79,6 +82,7 @@ int main(int argc, char* args[])
         // TODO: Move game logic
         // Update
         player_snake.update();
+        enemy.update();
 
         // check snake-wall collision
         if ((player_snake.getX() < 0) || (player_snake.getY() < 0) || (player_snake.getX() > kWidth) || (player_snake.getY() > kHeight))
@@ -105,7 +109,13 @@ int main(int argc, char* args[])
             player_snake.extend(1);
         }
 
-
+        if (enemy == food)
+        {
+            int new_x = ((rand() % kWidth) / kGridSize) * kGridSize;
+            int new_y = ((rand() % kHeight) / kGridSize) * kGridSize;
+            food.setPosition(new_x, new_y);
+            enemy.extend(1);
+        }
 
         food.update();
                 
@@ -114,6 +124,7 @@ int main(int argc, char* args[])
         SDL_RenderClear(renderer);
 
         player_snake.render(renderer);
+        enemy.render(renderer);
         food.render(renderer);
 
                 

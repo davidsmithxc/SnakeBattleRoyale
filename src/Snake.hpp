@@ -1,5 +1,6 @@
 #pragma once
 #include "Entity.hpp"
+#include "Food.hpp"
 #include <SDL2/SDL.h>
 #include <vector>
 
@@ -16,11 +17,15 @@ class Snake : public Entity
         void setHealth(int p_health) { m_health = p_health; };
         int  const getTailSize() { return m_tail.size(); };
         bool const isSelfCollided() { return m_selfCollision; };
-    private:
+    
+    protected:
         std::vector<SDL_Rect> m_tail;
         Direction m_dir;
+        void checkSelfCollision();
+        const int m_kSpeed;
+        Food* m_food;
+
+    private:
         int m_health;
         bool m_selfCollision;
-        const int m_kSpeed;
-        void checkSelfCollision();
 };
