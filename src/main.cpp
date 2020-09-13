@@ -60,12 +60,15 @@ int main(int argc, char* args[])
 
     // Push back player first to ensure player calculted first, food, 
     entities.push_back(player_snake.get());
-    entities.push_back(food.get());
 
     for (std::shared_ptr<AutoSnake> auto_snake : enemies)
     {
         entities.push_back(auto_snake.get());
     }
+
+
+    // ensure food is updated last so
+    entities.push_back(food.get());
 
     // start game loop
     while(gameRunning)
@@ -104,8 +107,9 @@ int main(int argc, char* args[])
         // *** Game Logic ***
         // TODO: Move game logic
         // Update
-        player_snake->update();
-        for (std::shared_ptr<AutoSnake> enemy : enemies) enemy->update();
+        // player_snake->update();
+        // for (std::shared_ptr<AutoSnake> enemy : enemies) enemy->update();
+        for (Entity* e : entities) e->update();
 
         // TODO: Move into snake
         // check snake-wall collision
@@ -117,6 +121,7 @@ int main(int argc, char* args[])
         }
 
         // check snake self-collision state
+        // TODO: Check snake self collisions
         if (player_snake->isSelfCollided())
         {
             player_snake->setHealth(0);
@@ -124,7 +129,7 @@ int main(int argc, char* args[])
             break;
         }
 
-        food->update();
+        // food->update();
                 
         // Do rendering
         SDL_SetRenderDrawColor(renderer, 0x1E, 0x1E, 0x1E, 0xFF);
