@@ -15,7 +15,7 @@ const char* kTitle = "Snake Royale";
 const int kWidth = 500;
 const int kHeight = 500;
 const int kGridSize = 10;
-const int kStartNumEnemies = 2;
+const int kStartNumEnemies = 0;
 
 int snapToGridPos(int p_point)
 {
@@ -107,8 +107,6 @@ int main(int argc, char* args[])
         // *** Game Logic ***
         // TODO: Move game logic
         // Update
-        // player_snake->update();
-        // for (std::shared_ptr<AutoSnake> enemy : enemies) enemy->update();
         for (Entity* e : entities) e->update();
 
         // TODO: Move into snake
@@ -128,8 +126,6 @@ int main(int argc, char* args[])
             gameRunning = false;
             break;
         }
-
-        // food->update();
                 
         // Do rendering
         SDL_SetRenderDrawColor(renderer, 0x1E, 0x1E, 0x1E, 0xFF);
