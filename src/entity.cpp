@@ -1,9 +1,11 @@
 #include "Entity.hpp"
 #include <iostream>
 
-Entity::Entity(int p_x, int p_y, int p_h, int p_w)
+Entity::Entity(int p_mapSize, int p_gridSize) : m_mapSize(p_mapSize), m_gridSize(p_gridSize)
 {
-    setShape(p_x, p_y, p_h, p_w);
+    setW(p_gridSize);
+    setH(p_gridSize);
+    setRandomPosition();
 }
 
 void Entity::setShape(int p_x, int p_y, int p_w, int p_h)
@@ -23,4 +25,23 @@ void Entity::setPosition(int p_x, int p_y)
 bool Entity::operator==(const Entity &rhs) const
 {
     return (this->m_shape.x == rhs.getX()) && (this->m_shape.y == rhs.getY());
+}
+
+void Entity::setRandomPosition()
+{
+    int new_x = ((rand() % m_mapSize) / m_gridSize) * m_gridSize;
+    int new_y = ((rand() % m_mapSize) / m_gridSize) * m_gridSize;
+    
+    new_x = snapToGrid(new_x);
+    new_y = snapToGrid(new_y);
+    setPosition(new_x, new_y);
+}
+
+int Entity::snapToGrid(int p_x)
+{
+    p_x /= m_gridSize;
+    p_x *= m_gridSize;
+
+    return p_x;
+
 }

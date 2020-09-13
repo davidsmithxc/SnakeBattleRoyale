@@ -2,7 +2,7 @@
 #include <vector>
 #include <iostream>
 
-Snake::Snake(int p_x, int p_y, int p_h, int p_w) : Entity::Entity(p_x, p_y, p_h, p_w), m_dir(Direction::kRight), m_health(1), m_kSpeed(p_w), m_selfCollision(false)
+Snake::Snake(int p_mapSize, int p_gridSize, Food* p_food) : Entity::Entity(p_mapSize, p_gridSize), m_dir(Direction::kRight), m_health(1), m_kSpeed(p_gridSize), m_selfCollision(false), m_food(p_food)
 {
     m_color.r = 0x00;
     m_color.g = 0x00;
@@ -80,6 +80,7 @@ void Snake::update()
     }
 
     if (m_tail.size() > 3) checkSelfCollision(); // snake cannot self collided for tail len < 3
+    checkAteFood();
 }
 
 void Snake::extend(int p_extension)
@@ -99,5 +100,15 @@ void Snake::checkSelfCollision()
             m_selfCollision = true;
             break;
         }
+    }
+}
+
+void Snake::checkAteFood()
+{
+    // check food eaten
+    if ((this->getX() == m_food->getX()) && (this->getY() == m_food->getY()))
+    {
+        m_food->setEaten();
+        this->extend(1);
     }
 }

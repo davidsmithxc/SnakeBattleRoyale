@@ -3,7 +3,7 @@
 #include "Entity.hpp"
 #include <iostream>
 
-AutoSnake::AutoSnake(int p_x, int p_y, int p_h, int p_w, Food* p_food) : Snake::Snake(p_x, p_y, p_h, p_w), m_food(p_food)
+AutoSnake::AutoSnake(int p_mapSize, int p_gridSize, Food* p_food) : Snake::Snake(p_mapSize, p_gridSize, p_food)
 {
     m_color.r = 0xFF;
     m_color.g = 0x00;
@@ -17,7 +17,7 @@ void AutoSnake::update()
 
     //TODO: This section is the same as base class snake -> how to generalize?
     ///////////////////
-    // star copied code
+    // start copied code
     if (m_tail.size() > 0)
     {
         m_tail.erase(m_tail.begin());
@@ -47,6 +47,7 @@ void AutoSnake::update()
     }
 
     if (m_tail.size() > 3) checkSelfCollision(); // snake cannot self collided for tail len < 3
+    checkAteFood();
 
     // end copied code
     ///////////////////

@@ -49,13 +49,13 @@ int main(int argc, char* args[])
     std::vector<Entity*> entities;
 
     // Make specific entities
-    std::shared_ptr<Snake> player_snake = std::make_shared<Snake>(snapToGridPos(0), snapToGridPos(0), kGridSize, kGridSize);
-    std::shared_ptr<Food> food = std::make_shared<Food>(snapToGridPos(kWidth / 2), snapToGridPos(kHeight / 2), kGridSize, kGridSize);
+    std::shared_ptr<Food> food = std::make_shared<Food>(kHeight, kGridSize);
+    std::shared_ptr<Snake> player_snake = std::make_shared<Snake>(kHeight, kGridSize, food.get());
     std::vector<std::shared_ptr<AutoSnake>> enemies;
 
     for (int i = 0; i < kStartNumEnemies; i++)
     {
-        enemies.emplace_back(std::make_shared<AutoSnake>(snapToGridPos(kWidth - kGridSize), snapToGridPos(kWidth - kGridSize), kGridSize, kGridSize, food.get()));
+        enemies.emplace_back(std::make_shared<AutoSnake>(kHeight, kGridSize, food.get()));
     }
 
     // Push back player first to ensure player calculted first, food, 
@@ -107,6 +107,7 @@ int main(int argc, char* args[])
         player_snake->update();
         for (std::shared_ptr<AutoSnake> enemy : enemies) enemy->update();
 
+        // TODO: Move into snake
         // check snake-wall collision
         if ((player_snake->getX() < 0) || (player_snake->getY() < 0) || (player_snake->getX() > kWidth) || (player_snake->getY() > kHeight))
         {
@@ -121,26 +122,6 @@ int main(int argc, char* args[])
             player_snake->setHealth(0);
             gameRunning = false;
             break;
-        }
-        
-        // check food eaten
-        if ((player_snake->getX() == food->getX()) && (player_snake->getY() == food->getY()))
-        {
-            int new_x = ((rand() % kWidth) / kGridSize) * kGridSize;
-            int new_y = ((rand() % kHeight) / kGridSize) * kGridSize;
-            food->setPosition(new_x, new_y);
-            player_snake->extend(1);
-        }
-
-        for (std::shared_ptr<AutoSnake> enemy : enemies)
-        {
-            if ((enemy->getX() == food->getX()) && (enemy->getY() == food->getY()))
-            {
-                int new_x = ((rand() % kWidth) / kGridSize) * kGridSize;
-                int new_y = ((rand() % kHeight) / kGridSize) * kGridSize;
-                food->setPosition(new_x, new_y);
-                enemy->extend(1);
-            }
         }
 
         food->update();

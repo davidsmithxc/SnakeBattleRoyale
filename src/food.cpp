@@ -1,7 +1,7 @@
 #include <SDL2/SDL.h>
 #include <Food.hpp>
 
-Food::Food(int p_x, int p_y, int p_h, int p_w) : Entity::Entity(p_x, p_y, p_h, p_w), m_eaten(false)
+Food::Food(int p_mapSize, int p_gridSize) : Entity::Entity(p_mapSize, p_gridSize), m_eaten(false)
 {
     m_color.r = 0x00;
     m_color.g = 0xFF;
@@ -17,5 +17,11 @@ void Food::render(SDL_Renderer* renderer)
 
 void Food::update()
 {
-    //TODO: allow new position
+    //TODO: Add snake<->food messaging to remove game logic check of food eaten.
+    //TODO: Make this method threadsafe
+    if (m_eaten)
+    {
+        setRandomPosition();
+        m_eaten = false;
+    };
 }

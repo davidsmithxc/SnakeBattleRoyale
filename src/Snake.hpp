@@ -7,7 +7,7 @@
 class Snake : public Entity
 {
     public:
-        Snake(int p_x, int p_y, int p_h, int p_w);
+        Snake(int p_mapSize, int p_gridSize, Food* p_food);
         ~Snake() {};
         void update();
         void changeDir(Direction p_dir);
@@ -22,6 +22,7 @@ class Snake : public Entity
         std::vector<SDL_Rect> m_tail;
         Direction m_dir;
         void checkSelfCollision();
+        void checkAteFood();
         const int m_kSpeed;
         Food* m_food;
 
