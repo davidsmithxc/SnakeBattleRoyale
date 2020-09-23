@@ -17,13 +17,13 @@ class Snake : public Entity
         void setHealth(int p_health) { m_health = p_health; };
         int  const getTailSize() { return m_tail.size(); };
         bool const isSelfCollided() { return m_selfCollision; };
-        Direction getDir() { return m_dir; }
+        Direction getDir() { return m_dir; };
+        std::vector<SDL_Rect> getTail() { return m_tail; };
     
     protected:
         std::vector<SDL_Rect> m_tail;
         Direction m_dir;
         void checkSelfCollision();
-        // void checkAteFood();
         const int m_kSpeed;
 
     private:

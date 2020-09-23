@@ -14,6 +14,7 @@ AutoSnake::AutoSnake(int p_gridSize) : Snake::Snake(p_gridSize)
 void AutoSnake::update()
 {
     //TODO: This section is the same as base class snake -> how to generalize?
+    //TODO: ensure that update stops if snake is dead
     ///////////////////
     // start copied code
     if (m_tail.size() > 0)

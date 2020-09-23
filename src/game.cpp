@@ -40,6 +40,15 @@ void GameApp::update()
             setRandomPosition(m_food.get());
         }
 
+        // TODO: Check collisions in a thread
+        for (Snake* &s2 : m_snakes)
+        {
+            if (s != s2)
+            {
+                if(checkSnakeCollision(s, s2)) s2->setHealth(0);
+            }
+        }
+        
         if (s != m_player.get()) routeToFood(s);
     }
 
@@ -191,4 +200,15 @@ void GameApp::routeToFood(Snake* p_snake)
         p_snake->changeDir(static_cast<Direction>(rand() % Direction::kNone));
     }
  
+}
+
+bool GameApp::checkSnakeCollision(Snake* p_snakeA, Snake* p_snakeB)
+{
+    SDL_Rect headA = *(p_snakeA->getShape());
+    for (SDL_Rect &t : p_snakeB->getTail())
+    {
+        if((t.x == headA.x) && (t.y == headA.y)) return true;
+    }
+
+    return false;
 }

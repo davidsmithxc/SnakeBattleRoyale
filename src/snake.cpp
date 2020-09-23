@@ -12,14 +12,17 @@ Snake::Snake(int p_gridSize) : Entity::Entity(p_gridSize), m_dir(Direction::kRig
 
 void Snake::render(SDL_Renderer* renderer)
 {
-    SDL_SetRenderDrawColor(renderer, m_color.r, m_color.g, m_color.b, m_color.a);
-    SDL_RenderFillRect(renderer, getShape());
-
-    for (SDL_Rect& rect : m_tail)
+    if (m_health > 0)
     {
-        //TODO: Parameterize tail color
-        SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0x00);
-        SDL_RenderFillRect(renderer, &rect);
+        SDL_SetRenderDrawColor(renderer, m_color.r, m_color.g, m_color.b, m_color.a);
+        SDL_RenderFillRect(renderer, getShape());
+
+        for (SDL_Rect& rect : m_tail)
+        {
+            //TODO: Parameterize tail color
+            SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0x00);
+            SDL_RenderFillRect(renderer, &rect);
+        }
     }
 }
 
@@ -80,7 +83,6 @@ void Snake::update()
     }
 
     if (m_tail.size() > 3) checkSelfCollision(); // snake cannot self collided for tail len < 3
-    // checkAteFood();
 }
 
 void Snake::extend(int p_extension)
@@ -102,16 +104,3 @@ void Snake::checkSelfCollision()
         }
     }
 }
-
-// TODO: Deprecate -> Moved to GameApp::checkSnakeAteFood
-/*
-void Snake::checkAteFood()
-{
-    // check food eaten
-    if ((this->getX() == m_food->getX()) && (this->getY() == m_food->getY()))
-    {
-        m_food->setEaten();
-        this->extend(1);
-    }
-}
-*/
