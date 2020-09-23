@@ -1,7 +1,7 @@
 #include <SDL2/SDL.h>
 #include <Food.hpp>
 
-Food::Food(int p_mapSize, int p_gridSize) : Entity::Entity(p_mapSize, p_gridSize), m_eaten(false)
+Food::Food(int p_gridSize) : Entity::Entity(p_gridSize), m_eaten(false)
 {
     m_color.r = 0x00;
     m_color.g = 0xFF;
@@ -21,7 +21,7 @@ void Food::update()
     //TODO: Make this method threadsafe
     if (m_eaten)
     {
-        setRandomPosition();
+        // setRandomPosition();
         m_eaten = false;
     };
 }

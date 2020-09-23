@@ -1,11 +1,11 @@
 #include "Entity.hpp"
 #include <iostream>
 
-Entity::Entity(int p_mapSize, int p_gridSize) : m_mapSize(p_mapSize), m_gridSize(p_gridSize)
+Entity::Entity(int p_gridSize) : m_gridSize(p_gridSize)
 {
     setW(p_gridSize);
     setH(p_gridSize);
-    setRandomPosition();
+    // setRandomPosition();
 }
 
 void Entity::setShape(int p_x, int p_y, int p_w, int p_h)
@@ -28,6 +28,7 @@ bool Entity::operator==(const Entity &rhs) const
 }
 
 // TODO: Deprecate -> moved to GameApp
+/*
 void Entity::setRandomPosition()
 {
     int new_x = ((rand() % m_mapSize) / m_gridSize) * m_gridSize;
@@ -37,8 +38,8 @@ void Entity::setRandomPosition()
     new_y = snapToGrid(new_y);
     setPosition(new_x, new_y);
 }
+*/
 
-// TODO: Deprecate -> moved to GameApp
 int Entity::snapToGrid(int p_x)
 {
     p_x /= m_gridSize;

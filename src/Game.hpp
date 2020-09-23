@@ -18,6 +18,7 @@ class GameApp
     private:
         // Game entities
         std::vector<Entity*> m_entities;
+        std::vector<Snake*> m_snakes;
         std::shared_ptr<Food> m_food;
         std::shared_ptr<Snake> m_player;
         std::vector<std::shared_ptr<AutoSnake>> m_enemies;
@@ -36,7 +37,10 @@ class GameApp
         void setRandomPosition(Entity* p_entity);
         bool checkSnakeCollision(Snake* p_snakeA, Snake* p_snakeB);
         bool checkSnakeAteFood(Snake* p_snake);
-        Direction routeToFoodAstar(Snake* p_snake);
+        
+        // TODO: add parameter for different routers?
+        void routeToFoodAstar(Snake* p_snake);
+        void routeToFood(Snake* p_snake);
         
         int snapToGrid(int p_x);
         // TODO: Is this a vector of objects or pointers?

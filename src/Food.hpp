@@ -5,7 +5,7 @@
 class Food : public Entity
 {
     public:
-        Food(int p_mapSize, int p_gridSize);
+        Food(int p_gridSize);
         ~Food(){};
         void update();
         void render(SDL_Renderer* renderer);

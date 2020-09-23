@@ -7,7 +7,7 @@
 class Snake : public Entity
 {
     public:
-        Snake(int p_mapSize, int p_gridSize, Food* p_food);
+        Snake(int p_gridSize);
         ~Snake() {};
         void update();
         void changeDir(Direction p_dir);
@@ -17,14 +17,14 @@ class Snake : public Entity
         void setHealth(int p_health) { m_health = p_health; };
         int  const getTailSize() { return m_tail.size(); };
         bool const isSelfCollided() { return m_selfCollision; };
+        Direction getDir() { return m_dir; }
     
     protected:
         std::vector<SDL_Rect> m_tail;
         Direction m_dir;
         void checkSelfCollision();
-        void checkAteFood();
+        // void checkAteFood();
         const int m_kSpeed;
-        Food* m_food;
 
     private:
         int m_health;

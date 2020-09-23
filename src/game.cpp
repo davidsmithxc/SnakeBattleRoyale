@@ -31,6 +31,18 @@ void GameApp::update()
         return;
     }
 
+    // check if food is eaten
+    for (Snake* &s : m_snakes)
+    {
+        if(checkSnakeAteFood(s))
+        {
+            s->extend(1);
+            setRandomPosition(m_food.get());
+        }
+
+        if (s != m_player.get()) routeToFood(s);
+    }
+
     // Do rendering
     SDL_SetRenderDrawColor(m_renderer, 0x1E, 0x1E, 0x1E, 0xFF);
     SDL_RenderClear(m_renderer);
@@ -43,24 +55,29 @@ void GameApp::update()
 void GameApp::init()
 {
     // Make specific entities
-    m_food = std::make_shared<Food>(m_mapSize, m_gridSize);
-    m_player = std::make_shared<Snake>(m_mapSize, m_gridSize, m_food.get());
+    m_food = std::make_shared<Food>(m_gridSize);
+    m_player = std::make_shared<Snake>(m_gridSize);
     std::vector<std::shared_ptr<AutoSnake>> enemies;
 
-    for (int i = 0; i < m_numStartingEnemies; i++)
-    {
-        m_enemies.emplace_back(std::make_shared<AutoSnake>(m_mapSize, m_gridSize, m_food.get()));
-        // TODO: Add pointer to entities now vs. another loop!
-    }
+    // TODO: Loop over all entities
+    // Init player and food pos
+    setRandomPosition(m_food.get());
+    setRandomPosition(m_player.get());
+    m_snakes.push_back(m_player.get());
 
     // Push back player first to ensure player calculted first, food, 
     m_entities.push_back(m_player.get());
 
-    for (std::shared_ptr<AutoSnake> auto_snake : m_enemies)
+    
+    for (int i = 0; i < m_numStartingEnemies; i++)
     {
-        m_entities.push_back(auto_snake.get());
+        m_enemies.emplace_back(std::make_shared<AutoSnake>(m_gridSize));
+        Snake* tmp_snake_ptr = m_enemies.back().get();
+        setRandomPosition(tmp_snake_ptr);
+        m_entities.push_back(tmp_snake_ptr);
+        m_snakes.push_back(tmp_snake_ptr);
+        // TODO: Add pointer to entities now vs. another loop!
     }
-
 
     // ensure food is updated last so
     m_entities.push_back(m_food.get());
@@ -88,10 +105,9 @@ int GameApp::snapToGrid(int p_x)
     return p_x;   
 }
 
-Direction GameApp::routeToFoodAstar(Snake* p_snake)
+void GameApp::routeToFoodAstar(Snake* p_snake)
 {
     // TODO: Implement Astar
-    return Direction::kNone;
 }
 
 void GameApp::handleInput()
@@ -122,4 +138,57 @@ void GameApp::handleInput()
                 }
             }
         }
+}
+
+bool GameApp::checkSnakeAteFood(Snake* p_snake)
+{
+    return (p_snake->getX() == m_food->getX()) && (p_snake->getY() == m_food->getY());
+}
+
+void GameApp::routeToFood(Snake* p_snake)
+{
+    // chance for snake to fail to take action
+    if (rand() % 101 < 20) return;
+    
+    Direction x_dir = Direction::kNone;
+    Direction y_dir = Direction::kNone;
+    
+    
+    // set y-dir
+    if(m_food->getY() > p_snake->getY())
+    {
+        y_dir = Direction::kDown;
+
+    } else if (m_food->getY() < p_snake->getY())
+    {
+        y_dir = Direction::kUp;
+    }
+
+    // set x-dir
+    if(m_food->getX() > p_snake->getX())
+    {
+        x_dir = Direction::kRight;
+
+    } else if (m_food->getX() < p_snake->getX())
+    {
+        x_dir = Direction::kLeft;
+    }
+
+    // Decide final direction
+    if ((x_dir != Direction::kNone) && !((x_dir == Direction::kUp) && (p_snake->getDir() == Direction::kDown)) && !((x_dir == Direction::kDown) && (p_snake->getDir() == kUp)))
+    {
+        p_snake->changeDir(x_dir);
+
+    } else if ((y_dir != Direction::kNone) && !((y_dir == Direction::kLeft) && (p_snake->getDir() == Direction::kRight)) && !((x_dir == Direction::kRight) && (p_snake->getDir() == kLeft)))
+    {
+        p_snake->changeDir(y_dir);
+    }
+
+    // add some imperfection to the snake
+    // TODO: Parameterize quality -> Base on level of snake size()
+    if (rand() % 101 < 5)
+    {
+        p_snake->changeDir(static_cast<Direction>(rand() % Direction::kNone));
+    }
+ 
 }
