@@ -18,8 +18,8 @@ class Entity
         void setShape(int p_x, int p_y, int p_w, int p_h);
         
         void setPosition(int p_x, int p_y);
-        void setX(int x) { m_shape.x = x; };
-        void setY(int y) { m_shape.y = y; };
+        void setX(int p_x);
+        void setY(int p_y);
 
         int getX() const { return m_shape.x; }
         int getY() const { return m_shape.y; }
@@ -29,13 +29,10 @@ class Entity
 
     protected:
         SDL_Color m_color;
-        //void setRandomPosition();
         int m_gridSize;
         void setW(int w) { m_shape.w = w; };
         void setH(int h) { m_shape.h = h; };
         int snapToGrid(int p_x);
-    
-    private:
         SDL_Rect m_shape;
         
 };

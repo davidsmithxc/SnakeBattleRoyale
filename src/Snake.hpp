@@ -14,7 +14,8 @@ class Snake : public Entity
         void changeDir(Direction p_dir);
         void render(SDL_Renderer* renderer);
         void extend(int p_extension);
-
+        void setPosition(int p_x, int p_y);
+        
         void setHealth(int p_health) { m_health = p_health; };
         int  const getTailSize() { return m_tail.size(); };
         bool const isSelfCollided() { return m_selfCollision; };
@@ -27,6 +28,10 @@ class Snake : public Entity
         Direction m_dir;
         void checkSelfCollision();
         int m_kSpeed;
+        float m_speed;
+        int m_kGridSize;
+        float m_x_position;
+        float m_y_position;
 
     private:
         int m_health;

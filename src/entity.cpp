@@ -5,7 +5,6 @@ Entity::Entity(int p_gridSize) : m_gridSize(p_gridSize)
 {
     setW(p_gridSize);
     setH(p_gridSize);
-    // setRandomPosition();
 }
 
 void Entity::setShape(int p_x, int p_y, int p_w, int p_h)
@@ -18,8 +17,18 @@ void Entity::setShape(int p_x, int p_y, int p_w, int p_h)
 
 void Entity::setPosition(int p_x, int p_y)
 {
-    m_shape.x = p_x;
-    m_shape.y = p_y;
+    m_shape.x = snapToGrid(p_x);
+    m_shape.y = snapToGrid(p_y);
+}
+
+void Entity::setX(int p_x)
+{
+    m_shape.x = snapToGrid(p_x);
+}
+
+void Entity::setY(int p_y)
+{
+    m_shape.y = snapToGrid(p_y);
 }
 
 bool Entity::operator==(const Entity &rhs) const

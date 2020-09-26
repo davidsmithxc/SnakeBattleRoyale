@@ -2,7 +2,7 @@
 #include <vector>
 #include <iostream>
 
-Snake::Snake(int p_gridSize) : Entity::Entity(p_gridSize), m_dir(Direction::kRight), m_health(1), m_kSpeed(p_gridSize), m_selfCollision(false)
+Snake::Snake(int p_gridSize) : Entity::Entity(p_gridSize), m_dir(Direction::kRight), m_health(1), m_kSpeed(p_gridSize), m_selfCollision(false), m_speed(5.0f)
 {
     m_color.r = 0x00;
     m_color.g = 0x00;
@@ -53,36 +53,48 @@ void Snake::changeDir(Direction p_dir)
 
 void Snake::update()
 {
-
-    if (m_tail.size() > 0)
-    {
-        m_tail.erase(m_tail.begin());
-        m_tail.emplace_back(*(getShape()));
-    }
     
     switch (m_dir)
     {
     case Direction::kUp:
-        decY(-m_kSpeed);
+        // decY(-m_kSpeed);
+        m_y_position -= m_speed;
         break;
 
     case Direction::kDown:
-        decY(m_kSpeed);
+        // decY(m_kSpeed);
+        m_y_position += m_speed;
         break;
 
     case Direction::kLeft:
-        decX(-m_kSpeed);
+        // decX(-m_kSpeed);
+        m_x_position -= m_speed;
         break;
 
     case Direction::kRight:
-        decX(m_kSpeed);
+        // decX(m_kSpeed);
+        m_x_position += m_speed;
         break;
     
     default:
         break;
     }
 
-    if (m_tail.size() > 3) checkSelfCollision(); // snake cannot self collided for tail len < 3
+    if((snapToGrid(static_cast<int>(m_x_position + 0.5)) != getX())
+        || (snapToGrid(static_cast<int>(m_y_position + 0.5)) != getY()))
+    {
+        if (m_tail.size() > 3) checkSelfCollision(); // snake cannot self collided for tail len < 3
+        
+        if (m_tail.size() > 0)
+        {
+            m_tail.erase(m_tail.begin());
+            m_tail.emplace_back(*(getShape()));
+        }
+
+        setX(static_cast<int>(m_x_position + 0.5f));
+        setY(static_cast<int>(m_y_position + 0.5f));
+    }
+
 }
 
 void Snake::extend(int p_extension)
@@ -91,6 +103,8 @@ void Snake::extend(int p_extension)
     {
         m_tail.emplace_back(*(getShape()));   
     }
+
+    m_speed -= 0.1f;
 }
 
 void Snake::checkSelfCollision()
@@ -108,4 +122,15 @@ void Snake::checkSelfCollision()
 bool const Snake::isDead()
 {
     return m_health == 0;
+}
+
+void Snake::setPosition(int p_x, int p_y)
+{
+    std::cout << "Set snake position" << std::endl;
+    
+    m_shape.x = snapToGrid(p_x);
+    m_shape.y = snapToGrid(p_y);
+
+    m_x_position = p_x;
+    m_y_position = p_y;
 }

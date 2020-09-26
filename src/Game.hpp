@@ -41,5 +41,5 @@ class GameApp
         void routeToFoodAstar(Snake* p_snake);
         void routeToFood(Snake* p_snake);
         
-        int snapToGrid(int p_x);
+        // int snapToGrid(int p_x);
 };

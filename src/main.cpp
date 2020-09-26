@@ -17,14 +17,8 @@ const int kWidth = 500;
 const int kHeight = 500;
 const int kGridSize = 10;
 const int kStartNumEnemies = 0;
-
-int snapToGridPos(int p_point)
-{
-    p_point /= kGridSize;
-    p_point *= kGridSize;
-
-    return p_point;
-}
+const int kFPS = 60;
+const int kMsPerFrame = 1000 / kFPS;
 
 int main(int argc, char* args[])
 {
@@ -41,16 +35,19 @@ int main(int argc, char* args[])
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
     // set up game app
-    bool gameRunning = true;
     GameApp game(kWidth, kGridSize, renderer);
     game.init();
+    auto startTime = std::chrono::system_clock::now();
 
     // start game loop
     while(game.isRunning())
     {
+        startTime = std::chrono::system_clock::now();
         game.update();
         // TODO: Create proper game loop
-        std::this_thread::sleep_for(std::chrono::milliseconds(60));
+        auto loop_duration_ms = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - startTime).count() / 1000.0f;
+        int sleep_time = static_cast<int>(kMsPerFrame - loop_duration_ms);
+        std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time));
     }
 
     // exit and clean up

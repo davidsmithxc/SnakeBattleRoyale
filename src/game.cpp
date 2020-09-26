@@ -1,6 +1,7 @@
 #include "Game.hpp"
 #include "Entity.hpp"
 #include <algorithm>
+#include <time.h>
 
 GameApp::GameApp(int p_mapSize, int p_gridSize, SDL_Renderer* p_renderer)
 : m_mapSize(p_mapSize), m_gridSize(p_gridSize), m_renderer(p_renderer), m_gameRunning(false)
@@ -77,6 +78,8 @@ void GameApp::update()
 
 void GameApp::init()
 {
+    srand(time(NULL));
+    
     // Make specific entities
     m_food = std::make_shared<Food>(m_gridSize);
     m_player = std::make_shared<Snake>(m_gridSize);
@@ -96,12 +99,11 @@ void GameApp::init()
     for (int i = 0; i < m_numStartingEnemies; i++)
     {
         m_snakes.emplace_back(std::make_shared<AutoSnake>(m_gridSize));
-        // Snake* tmp_snake_ptr = m_enemies.back().get();
-        setRandomPosition(m_snakes.back().get());
+        // setRandomPosition(m_snakes.back().get());
+        m_snakes.back()->setPosition(rand() % m_mapSize , rand() % m_mapSize);
     }
 
-    // ensure food is updated last so
-    // m_entities.push_back(m_food.get());
+    // m_snakes.back()->setX(200);
 
     // set game to running
     m_gameRunning = true;
@@ -110,20 +112,10 @@ void GameApp::init()
 
 void GameApp::setRandomPosition(Entity* p_entity)
 {
-    int new_x = ((rand() % m_mapSize) / m_gridSize) * m_gridSize;
-    int new_y = ((rand() % m_mapSize) / m_gridSize) * m_gridSize;
-    
-    new_x = snapToGrid(new_x);
-    new_y = snapToGrid(new_y);
+    int new_x = rand() % m_mapSize;
+    int new_y = rand() % m_mapSize;
+
     p_entity->setPosition(new_x, new_y);
-}
-
-int GameApp::snapToGrid(int p_x)
-{
-    p_x /= m_gridSize;
-    p_x *= m_gridSize;
-
-    return p_x;   
 }
 
 void GameApp::routeToFoodAstar(Snake* p_snake)

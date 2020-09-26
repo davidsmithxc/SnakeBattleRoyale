@@ -11,6 +11,7 @@ AutoSnake::AutoSnake(int p_gridSize) : Snake::Snake(p_gridSize)
     m_color.a = 0x00;
 }
 
+/*
 void AutoSnake::update()
 {
     //TODO: This section is the same as base class snake -> how to generalize?
@@ -49,3 +50,4 @@ void AutoSnake::update()
     // end copied code
     ///////////////////
 }
+*/
