@@ -125,9 +125,7 @@ bool const Snake::isDead()
 }
 
 void Snake::setPosition(int p_x, int p_y)
-{
-    std::cout << "Set snake position" << std::endl;
-    
+{   
     m_shape.x = snapToGrid(p_x);
     m_shape.y = snapToGrid(p_y);
 
