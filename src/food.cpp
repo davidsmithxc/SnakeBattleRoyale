@@ -17,11 +17,9 @@ void Food::render(SDL_Renderer* renderer)
 
 void Food::update()
 {
-    //TODO: Add snake<->food messaging to remove game logic check of food eaten.
     //TODO: Make this method threadsafe
     if (m_eaten)
     {
-        // setRandomPosition();
         m_eaten = false;
     };
 }

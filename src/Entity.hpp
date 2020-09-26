@@ -5,7 +5,7 @@
 #include <iostream>
 
 //TODO: Move to common definitions or better wrap somehow
-enum Direction {kUp, kDown, kLeft, kRight, kNone};
+enum Direction {kUp, kLeft, kDown, kRight, kNone};
 
 class Entity
 {

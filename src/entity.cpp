@@ -27,19 +27,6 @@ bool Entity::operator==(const Entity &rhs) const
     return (this->m_shape.x == rhs.getX()) && (this->m_shape.y == rhs.getY());
 }
 
-// TODO: Deprecate -> moved to GameApp
-/*
-void Entity::setRandomPosition()
-{
-    int new_x = ((rand() % m_mapSize) / m_gridSize) * m_gridSize;
-    int new_y = ((rand() % m_mapSize) / m_gridSize) * m_gridSize;
-    
-    new_x = snapToGrid(new_x);
-    new_y = snapToGrid(new_y);
-    setPosition(new_x, new_y);
-}
-*/
-
 int Entity::snapToGrid(int p_x)
 {
     p_x /= m_gridSize;

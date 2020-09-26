@@ -82,7 +82,6 @@ void GameApp::init()
     m_player = std::make_shared<Snake>(m_gridSize);
     std::vector<std::shared_ptr<AutoSnake>> enemies;
 
-    // TODO: Loop over all entities
     // Init player and food pos
     setRandomPosition(m_food.get());
     setRandomPosition(m_player.get());
@@ -169,50 +168,37 @@ bool GameApp::checkSnakeAteFood(Snake* p_snake)
 
 void GameApp::routeToFood(Snake* p_snake)
 {
-    // chance for snake to fail to take action
-    if (rand() % 101 < 0) return;
+    int x_dist = p_snake->getX() - m_food->getX();
+    int y_dist = p_snake->getY() - m_food->getY();
+    Direction dir_to_food = Direction::kNone;
+
+    if (std::abs(x_dist) > std::abs(y_dist))
+    {
+        if(x_dist > 0)
+        {
+            dir_to_food = Direction::kLeft;
+        } else {
+            dir_to_food = Direction::kRight;
+        }
+    } else {
+
+        if(y_dist > 0)
+        {
+            dir_to_food = Direction::kUp;
+        } else{
+            dir_to_food = Direction::kDown;
+        }
+    }
+
+    // if already headed in that direction, do nothing
+    if (dir_to_food == p_snake->getDir()) return;
     
-    Direction x_dir = Direction::kNone;
-    Direction y_dir = Direction::kNone;
+    // turn randomly if food is directly behind
+    if ((dir_to_food % 2) == (p_snake->getDir() % 2)) p_snake->changeDir(static_cast<Direction>(rand() % Direction::kNone));
     
-    
-    // set y-dir
-    if(m_food->getY() > p_snake->getY())
-    {
-        y_dir = Direction::kDown;
+    // follow shortest path to food
+    p_snake->changeDir(dir_to_food);
 
-    } else if (m_food->getY() < p_snake->getY())
-    {
-        y_dir = Direction::kUp;
-    }
-
-    // set x-dir
-    if(m_food->getX() > p_snake->getX())
-    {
-        x_dir = Direction::kRight;
-
-    } else if (m_food->getX() < p_snake->getX())
-    {
-        x_dir = Direction::kLeft;
-    }
-
-    // Decide final direction
-    if ((x_dir != Direction::kNone) && !((x_dir == Direction::kUp) && (p_snake->getDir() == Direction::kDown)) && !((x_dir == Direction::kDown) && (p_snake->getDir() == kUp)))
-    {
-        p_snake->changeDir(x_dir);
-
-    } else if ((y_dir != Direction::kNone) && !((y_dir == Direction::kLeft) && (p_snake->getDir() == Direction::kRight)) && !((x_dir == Direction::kRight) && (p_snake->getDir() == kLeft)))
-    {
-        p_snake->changeDir(y_dir);
-    }
-
-    // add some imperfection to the snake
-    // TODO: Parameterize quality -> Base on level of snake size()
-    if (rand() % 101 < 0)
-    {
-        p_snake->changeDir(static_cast<Direction>(rand() % Direction::kNone));
-    }
- 
 }
 
 bool GameApp::checkSnakeCollision(Snake* p_snakeA, Snake* p_snakeB)
