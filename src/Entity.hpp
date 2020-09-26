@@ -2,6 +2,7 @@
 #include <SDL2/SDL.h>
 #include <vector>
 #include <memory>
+#include <iostream>
 
 //TODO: Move to common definitions or better wrap somehow
 enum Direction {kUp, kDown, kLeft, kRight, kNone};
@@ -10,7 +11,7 @@ class Entity
 {
     public:
         Entity(int p_gridSize);
-        virtual ~Entity() = default;
+        ~Entity() {};
         virtual void update() = 0;
         virtual void render(SDL_Renderer* renderer) = 0;
         SDL_Rect* getShape() { return &m_shape; };

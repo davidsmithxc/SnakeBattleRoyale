@@ -1,5 +1,6 @@
 #pragma once
 #include "Snake.hpp"
+#include <iostream>
 
 class AutoSnake : public Snake
 {

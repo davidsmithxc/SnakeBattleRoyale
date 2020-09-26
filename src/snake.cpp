@@ -104,3 +104,8 @@ void Snake::checkSelfCollision()
         }
     }
 }
+
+bool const Snake::isDead()
+{
+    return m_health == 0;
+}

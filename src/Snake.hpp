@@ -3,6 +3,7 @@
 #include "Food.hpp"
 #include <SDL2/SDL.h>
 #include <vector>
+#include <iostream>
 
 class Snake : public Entity
 {
@@ -17,6 +18,7 @@ class Snake : public Entity
         void setHealth(int p_health) { m_health = p_health; };
         int  const getTailSize() { return m_tail.size(); };
         bool const isSelfCollided() { return m_selfCollision; };
+        bool const isDead();
         Direction getDir() { return m_dir; };
         std::vector<SDL_Rect> getTail() { return m_tail; };
     
@@ -24,7 +26,7 @@ class Snake : public Entity
         std::vector<SDL_Rect> m_tail;
         Direction m_dir;
         void checkSelfCollision();
-        const int m_kSpeed;
+        int m_kSpeed;
 
     private:
         int m_health;
