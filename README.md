@@ -34,7 +34,7 @@ The `Snake` class dervies from the `Entity` base class. Unique to the snake clas
 Methods to make the game logic outside of the `Snake` are provided. These include checking of self collisions `isSelfCollided`, checking health `isDead`, and passing a direction change command `changeDir`, and extending the snake `extend`.
 
 #### AutoSnake class
-Enemy snakes are created as an `AutoSnake` object. The only significant difference to the base `Snake` class currently implemented is the coloring. However the design is strucutred to further compose the `AutoSnake` with various behaviors, e.g. the ability to cylce through different routers, dynamically adjust speed, route to attack the player vs. collect food, etc.
+Enemy snakes are created as an `AutoSnake` object. A trivial difference to the base `Snake` class currently implemented is the coloring. However the design is strucutred to further compose the `AutoSnake` with various behaviors, e.g. the ability to cylce through different routers, dynamically adjust speed, route to attack the player vs. collect food, etc. An example implementation of this is the `AutoSnake` member function pointer `router`. After the `AutoSnake` object is instanciated, a router function can be bound. This feature allows a variety of enemy behavior.
 
 ### Food class
 Also derived from the `Entity` base class, the object that the snakes seek is `Food`. Food has very few properties, only the boolean `eaten` to track if food has been eaten.
