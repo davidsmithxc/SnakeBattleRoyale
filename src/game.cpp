@@ -99,11 +99,10 @@ void GameApp::init()
     for (int i = 0; i < m_numStartingEnemies; i++)
     {
         m_snakes.emplace_back(std::make_shared<AutoSnake>(m_gridSize));
-        // setRandomPosition(m_snakes.back().get());
         m_snakes.back()->setPosition(rand() % m_mapSize , rand() % m_mapSize);
+        // TODO: add function pointer to autosnake member for the routing function
+        // dynamic_cast<AutoSnake&>(*(m_snakes.back())).router = &TBD_ROUTING_FUNCTION;
     }
-
-    // m_snakes.back()->setX(200);
 
     // set game to running
     m_gameRunning = true;
@@ -158,6 +157,7 @@ bool GameApp::checkSnakeAteFood(Snake* p_snake)
     return (p_snake->getX() == m_food->getX()) && (p_snake->getY() == m_food->getY());
 }
 
+// TODO: Move into own class in order to register with AutoSnakes
 void GameApp::routeToFood(Snake* p_snake)
 {
     int x_dist = p_snake->getX() - m_food->getX();

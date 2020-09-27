@@ -44,7 +44,7 @@ int main(int argc, char* args[])
     {
         startTime = std::chrono::system_clock::now();
         game.update();
-        // TODO: Create proper game loop
+
         auto loop_duration_ms = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - startTime).count() / 1000.0f;
         int sleep_time = static_cast<int>(kMsPerFrame - loop_duration_ms);
         std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time));
