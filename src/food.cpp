@@ -17,7 +17,6 @@ void Food::render(SDL_Renderer* renderer)
 
 void Food::update()
 {
-    //TODO: Make this method threadsafe
     if (m_eaten)
     {
         m_eaten = false;

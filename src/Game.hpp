@@ -35,11 +35,5 @@ class GameApp
         void setRandomPosition(Entity* p_entity);
         bool checkSnakeCollision(Snake* p_snakeA, Snake* p_snakeB);
         bool checkSnakeAteFood(Snake* p_snake);
-        bool checkWallCollision(Snake* p_snake);
-        
-        // TODO: add parameter for different routers?
-        void routeToFoodAstar(Snake* p_snake);
-        void routeToFood(Snake* p_snake);
-        
-        // int snapToGrid(int p_x);
+        bool checkWallCollision(Snake* p_snake);        
 };

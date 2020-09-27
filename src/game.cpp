@@ -1,5 +1,6 @@
 #include "Game.hpp"
 #include "Entity.hpp"
+#include "Router.hpp"
 #include <algorithm>
 #include <time.h>
 
@@ -42,7 +43,7 @@ void GameApp::update()
             setRandomPosition(m_food.get());
         }
 
-        // TODO: Check collisions in a thread
+        // TODO: Profile collision checking; consider a thread
         for (std::shared_ptr<Snake> &s2 : m_snakes)
         {
             if (s != s2)
@@ -51,7 +52,10 @@ void GameApp::update()
             }
         }
         
-        if (s != m_player) routeToFood(s.get());
+        if (s != m_player)
+        {
+            dynamic_cast<AutoSnake&>(*(s)).router(s.get(), m_food.get());
+        };
     }
 
     // remove dead snakes
@@ -100,8 +104,13 @@ void GameApp::init()
     {
         m_snakes.emplace_back(std::make_shared<AutoSnake>(m_gridSize));
         m_snakes.back()->setPosition(rand() % m_mapSize , rand() % m_mapSize);
-        // TODO: add function pointer to autosnake member for the routing function
-        // dynamic_cast<AutoSnake&>(*(m_snakes.back())).router = &TBD_ROUTING_FUNCTION;
+
+        if ( rand() % 2 == 1)
+        {
+            dynamic_cast<AutoSnake&>(*(m_snakes.back())).router = &Router::linear;
+        } else {
+            dynamic_cast<AutoSnake&>(*(m_snakes.back())).router = &Router::shortest;
+        }
     }
 
     // set game to running
@@ -115,11 +124,6 @@ void GameApp::setRandomPosition(Entity* p_entity)
     int new_y = rand() % m_mapSize;
 
     p_entity->setPosition(new_x, new_y);
-}
-
-void GameApp::routeToFoodAstar(Snake* p_snake)
-{
-    // TODO: Implement Astar
 }
 
 void GameApp::handleInput()
@@ -155,42 +159,6 @@ void GameApp::handleInput()
 bool GameApp::checkSnakeAteFood(Snake* p_snake)
 {
     return (p_snake->getX() == m_food->getX()) && (p_snake->getY() == m_food->getY());
-}
-
-// TODO: Move into own class in order to register with AutoSnakes
-void GameApp::routeToFood(Snake* p_snake)
-{
-    int x_dist = p_snake->getX() - m_food->getX();
-    int y_dist = p_snake->getY() - m_food->getY();
-    Direction dir_to_food = Direction::kNone;
-
-    if (std::abs(x_dist) > std::abs(y_dist))
-    {
-        if(x_dist > 0)
-        {
-            dir_to_food = Direction::kLeft;
-        } else {
-            dir_to_food = Direction::kRight;
-        }
-    } else {
-
-        if(y_dist > 0)
-        {
-            dir_to_food = Direction::kUp;
-        } else{
-            dir_to_food = Direction::kDown;
-        }
-    }
-
-    // if already headed in that direction, do nothing
-    if (dir_to_food == p_snake->getDir()) return;
-    
-    // turn randomly if food is directly behind
-    if ((dir_to_food % 2) == (p_snake->getDir() % 2)) p_snake->changeDir(static_cast<Direction>(rand() % Direction::kNone));
-    
-    // follow shortest path to food
-    p_snake->changeDir(dir_to_food);
-
 }
 
 bool GameApp::checkSnakeCollision(Snake* p_snakeA, Snake* p_snakeB)

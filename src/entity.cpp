@@ -31,16 +31,10 @@ void Entity::setY(int p_y)
     m_shape.y = snapToGrid(p_y);
 }
 
-bool Entity::operator==(const Entity &rhs) const
-{
-    return (this->m_shape.x == rhs.getX()) && (this->m_shape.y == rhs.getY());
-}
-
 int Entity::snapToGrid(int p_x)
 {
     p_x /= m_gridSize;
     p_x *= m_gridSize;
 
     return p_x;
-
 }

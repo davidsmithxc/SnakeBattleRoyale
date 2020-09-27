@@ -23,9 +23,6 @@ class Entity
 
         int getX() const { return m_shape.x; }
         int getY() const { return m_shape.y; }
-        void decX(int p_x) { m_shape.x += p_x; }
-        void decY(int p_y) { m_shape.y += p_y; }
-        bool operator==(const Entity &rhs) const;
 
     protected:
         SDL_Color m_color;

@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Snake.hpp"
 #include <iostream>
 #include <memory>
@@ -9,7 +10,7 @@ class AutoSnake : public Snake
         AutoSnake(int p_gridSize);
         ~AutoSnake() {};
         // void update();
-        void (*router)(Snake*);
+        void (*router)(Snake*, Food*);
     private:
         void routeToFood();
 };
